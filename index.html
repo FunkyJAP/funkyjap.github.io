@@ -1,11 +1,122 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-  <meta charset="UTF-8">
-  <title>My Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI学習の旅路 - The Journey of Knowledge</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Shippori+Mincho:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
-  <h1>Hello Funky World!</h1>
-  <p>This is my homepage!!</p>
+    <div class="background-container">
+        <!-- Magic Circle SVG (Inline for easy styling) -->
+        <svg class="magic-circle" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+                    <feMerge>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
+            <circle cx="250" cy="250" r="240" stroke="rgba(162, 210, 255, 0.4)" stroke-width="2" fill="none" />
+            <circle cx="250" cy="250" r="200" stroke="rgba(162, 210, 255, 0.3)" stroke-width="1" fill="none"
+                class="rotate-cw" />
+            <rect x="250" y="250" width="180" height="180" stroke="rgba(162, 210, 255, 0.2)" fill="none"
+                transform="translate(-90,-90) rotate(45 250 250)" class="rotate-ccw" />
+            <rect x="250" y="250" width="180" height="180" stroke="rgba(162, 210, 255, 0.2)" fill="none"
+                transform="translate(-90,-90)" class="rotate-cw" />
+            <circle cx="250" cy="250" r="50" stroke="rgba(212, 175, 55, 0.5)" stroke-width="2" fill="none" />
+            <path d="M250 10 L250 490 M10 250 L490 250" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+        </svg>
+    </div>
+
+    <header class="site-header">
+        <div class="header-inner">
+            <h1 class="page-title">AI学習の旅路<span class="en-title">The Journey of Knowledge</span></h1>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#about">記録</a></li>
+                    <li><a href="#grimoire">魔導書</a></li>
+                    <li><a href="#spells">魔法</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="hero-section">
+            <div class="hero-text">
+                <p class="intro-jp">魔法（データ）を知るための<br>長い旅が始まる。</p>
+                <p class="intro-en">A long journey to understand the magic of data.</p>
+            </div>
+        </section>
+
+        <section id="about" class="content-section">
+            <div class="parchment-container">
+                <h2 class="section-title">旅の目的</h2>
+                <p>人の心を知るように、データの深淵を覗く。<br>
+                    この春から始まる大学院での研究、日々の気づき、<br>
+                    そして集めた「魔法」の数々をここに記す。</p>
+            </div>
+        </section>
+
+        <section id="grimoire" class="content-section">
+            <h2 class="section-title text-center">日々の魔導書</h2>
+            <div class="card-grid">
+                <article class="magic-card">
+                    <div class="card-date">Era 2026.04.01</div>
+                    <h3>旅立ちの日</h3>
+                    <p>新たな研究室というパーティに加わる。まずは環境構築という名の儀式から始めよう。</p>
+                    <a href="#" class="read-more">紐解く</a>
+                </article>
+                <article class="magic-card">
+                    <div class="card-date">Era 2026.04.15</div>
+                    <h3>Pythonの杖</h3>
+                    <p>強力だが制御が難しい杖を手に入れた。型推論という魔法がなければ暴走するかもしれない。</p>
+                    <a href="#" class="read-more">紐解く</a>
+                </article>
+                <article class="magic-card">
+                    <div class="card-date">Era 2026.05.02</div>
+                    <h3>深層学習の迷宮</h3>
+                    <p>ブラックボックスと呼ばれる迷宮へ。勾配消失という罠に気をつけなければならない。</p>
+                    <a href="#" class="read-more">紐解く</a>
+                </article>
+            </div>
+        </section>
+
+        <section id="spells" class="content-section">
+            <h2 class="section-title text-center">習得した魔法</h2>
+            <div class="spell-list">
+                <div class="spell-item">
+                    <span class="spell-name">import numpy as np</span>
+                    <span class="spell-desc">数値を操る基礎魔法</span>
+                </div>
+                <div class="spell-item">
+                    <span class="spell-name">model.fit()</span>
+                    <span class="spell-desc">知性を吹き込む儀式</span>
+                </div>
+                <div class="spell-item">
+                    <span class="spell-name">loss.backward()</span>
+                    <span class="spell-desc">過去から学ぶ逆伝播</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-deco">⚜</div>
+        <p>&copy; 2026 The Archmage's Apprentice. <br>The journey continues.</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
+
 </html>
