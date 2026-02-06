@@ -68,26 +68,57 @@
             </div>
         </section>
 
+        <!-- Journey Timeline Section -->
+        <section id="timeline" class="content-section">
+            <h2 class="section-title text-center">旅の軌跡 <span class="en-subtitle">The Chronology of Journey</span></h2>
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-era">魔王（データサイエンス）との出会いから 0年</span>
+                        <h3>独学の森を歩む</h3>
+                        <p>統計学とPythonの基礎を習得。独学という果てしない道を進み始める。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-era">旅の始まりから 2年</span>
+                        <h3>聖都（大学院）への入学</h3>
+                        <p>より高度な「魔法」を求めて。専門的な研究の門を叩く。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-era">現在</span>
+                        <h3>未知の階層へ</h3>
+                        <p>深層学習の深淵、そして生成AIという新たな魔法を研究中。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="grimoire" class="content-section">
             <h2 class="section-title text-center">日々の魔導書</h2>
             <div class="card-grid">
-                <article class="magic-card">
+                <article class="magic-card" id="card-1">
                     <div class="card-date">Era 2026.04.01</div>
                     <h3>旅立ちの日</h3>
                     <p>新たな研究室というパーティに加わる。まずは環境構築という名の儀式から始めよう。</p>
-                    <a href="#" class="read-more">紐解く</a>
+                    <a href="#" class="read-more" id="read-more-1">紐解く</a>
                 </article>
-                <article class="magic-card">
+                <article class="magic-card" id="card-2">
                     <div class="card-date">Era 2026.04.15</div>
                     <h3>Pythonの杖</h3>
                     <p>強力だが制御が難しい杖を手に入れた。型推論という魔法がなければ暴走するかもしれない。</p>
-                    <a href="#" class="read-more">紐解く</a>
+                    <a href="#" class="read-more" id="read-more-2">紐解く</a>
                 </article>
-                <article class="magic-card">
+                <article class="magic-card" id="card-3">
                     <div class="card-date">Era 2026.05.02</div>
                     <h3>深層学習の迷宮</h3>
                     <p>ブラックボックスと呼ばれる迷宮へ。勾配消失という罠に気をつけなければならない。</p>
-                    <a href="#" class="read-more">紐解く</a>
+                    <a href="#" class="read-more" id="read-more-3">紐解く</a>
                 </article>
             </div>
         </section>
@@ -95,21 +126,24 @@
         <section id="spells" class="content-section">
             <h2 class="section-title text-center">習得した魔法</h2>
             <div class="spell-list">
-                <div class="spell-item">
+                <div class="spell-item" id="spell-1">
                     <span class="spell-name">import numpy as np</span>
                     <span class="spell-desc">数値を操る基礎魔法</span>
                 </div>
-                <div class="spell-item">
+                <div class="spell-item" id="spell-2">
                     <span class="spell-name">model.fit()</span>
                     <span class="spell-desc">知性を吹き込む儀式</span>
                 </div>
-                <div class="spell-item">
+                <div class="spell-item" id="spell-3">
                     <span class="spell-name">loss.backward()</span>
                     <span class="spell-desc">過去から学ぶ逆伝播</span>
                 </div>
             </div>
         </section>
     </main>
+
+    <!-- Petals Container -->
+    <div id="petals-container"></div>
 
     <footer class="site-footer">
         <div class="footer-deco">⚜</div>
