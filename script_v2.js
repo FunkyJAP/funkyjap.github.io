@@ -4,57 +4,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const fernMsg = fernOverlay.querySelector('.fern-message');
     const fernSub = fernOverlay.querySelector('.fern-message.sub');
 
-    // --- ここに取得したAPIキーを貼り付けてください ---
+    // --- 設定 ---
     const GEMINI_API_KEY = "AIzaSyD-7piW3djXwy7iXjEFRIOHfrMPTiDZLVA";
 
     let attemptCount = 0;
 
     async function fetchDynamicReaction(count) {
-        if (!GEMINI_API_KEY || GEMINI_API_KEY.length < 10) {
-            return { main: "APIキー未設定", sub: "script.jsの9行目を確認してください" };
-        }
-
-        const prompt = "あなたは『葬送のフリーレン』の「フェルン」です。目の前の不躾な相手に冷たく突き放すツッコミを。1行目にセリフ、2行目に状況。";
+        const randomSeed = Math.random().toString(36).substring(7);
+        const prompt = `あなたは葬送のフリーレンのフェルンです。不躾な相手（${count}回目）に冷たく。1行目にセリフ、2行目に状況。SEED:${randomSeed}`;
 
         try {
-            // v1beta に修正
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            // URLを最も標準的でエラーの少ない「v1」パスに変更します
+            // もしこれでも404なら、モデル名の指定方法をさらにシンプルにします
+            const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                    safetySettings: [
-                        { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-                        { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" }
-                    ]
+                    contents: [{ parts: [{ text: prompt }] }]
                 })
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                return {
-                    main: "「通信に失敗しました」",
-                    sub: `HTTP ${response.status}: ${data.error ? data.error.message : 'Unknown Error'}`
-                };
-            }
+                // 404が出た場合、URLをもう一つの形式にリトライする
+                const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+                const retryResponse = await fetch(fallbackUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
 
-            if (!data.candidates || data.candidates.length === 0) {
-                return { main: "「……。」", sub: "（AIが沈黙しました。安全フィルターの可能性があります）" };
+                if (!retryResponse.ok) {
+                    const retryData = await retryResponse.json();
+                    return {
+                        main: "「通信失敗」",
+                        sub: `HTTP ${retryResponse.status}: ${retryData.error ? retryData.error.message : 'Not Found'}`
+                    };
+                }
+                const retryData = await retryResponse.json();
+                const rawText = retryData.candidates[0].content.parts[0].text.trim();
+                const lines = rawText.split('\n').filter(l => l.trim().length > 0);
+                return { main: lines[0], sub: lines[1] || "（軽蔑）" };
             }
 
             const rawText = data.candidates[0].content.parts[0].text.trim();
             const lines = rawText.split('\n').filter(l => l.trim().length > 0);
-
             return {
                 main: lines[0] || "「えっちです。」",
                 sub: lines[1] || "（ゴミを見るような目）"
             };
 
         } catch (error) {
-            return { main: "「接続遮断」", sub: "ネットワークまたはCORSエラーです" };
+            return { main: "「接続エラー」", sub: error.message };
         }
     }
 
@@ -64,14 +68,11 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < 8; i++) createHeart();
             kissBtn.disabled = true;
             kissBtn.innerText = "交信中...";
-
             const reaction = await fetchDynamicReaction(attemptCount);
-
             setTimeout(() => {
-                const isError = reaction.main.includes("失敗");
                 fernMsg.innerText = reaction.main;
                 fernSub.innerText = reaction.sub;
-                showFernReaction(isError);
+                showFernReaction(reaction.main.includes("失敗"));
                 kissBtn.disabled = false;
                 kissBtn.innerText = "投げキッスを試みる";
             }, 600);
@@ -91,15 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showFernReaction(isError = false) {
         fernOverlay.classList.remove('hidden');
         document.body.style.backgroundColor = isError ? 'rgba(255, 0, 0, 0.1)' : 'rgba(75, 0, 130, 0.1)';
-
-        if (!isError) {
-            setTimeout(() => {
-                fernOverlay.classList.add('hidden');
-                document.body.style.backgroundColor = '';
-            }, 4000);
-        } else {
-            fernSub.innerHTML += "<br><br><small>(ページをリロードしてやり直してください)</small>";
-        }
+        if (!isError) setTimeout(() => { fernOverlay.classList.add('hidden'); document.body.style.backgroundColor = ''; }, 4000);
     }
 
     const magicCircle = document.querySelector('.magic-circle');

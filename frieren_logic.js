@@ -4,20 +4,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const fernMsg = fernOverlay.querySelector('.fern-message');
     const fernSub = fernOverlay.querySelector('.fern-message.sub');
 
-    // --- ここに取得したAPIキーを貼り付けてください ---
+    // --- 設定 ---
     const GEMINI_API_KEY = "AIzaSyD-7piW3djXwy7iXjEFRIOHfrMPTiDZLVA";
 
     let attemptCount = 0;
 
     async function fetchDynamicReaction(count) {
-        if (!GEMINI_API_KEY || GEMINI_API_KEY.length < 10) {
-            return { main: "APIキー未設定", sub: "script.jsの9行目を確認してください" };
-        }
-
-        const prompt = "あなたは『葬送のフリーレン』の「フェルン」です。目の前の不躾な相手に冷たく突き放すツッコミを。1行目にセリフ、2行目に状況。";
+        const randomSeed = Math.random().toString(36).substring(7);
+        // 回答がJSON形式になりやすいように明示
+        const prompt = `あなたは葬送のフリーレンのフェルンです。不躾に投げキッスをしてきた相手に対して、冷たく突き放す短い一言を授けてください。SEED:${randomSeed}
+        回答は必ず以下の形式にしてください：
+        セリフ
+        （状況描写）`;
 
         try {
-            // v1beta に修正
+            // URL：最も標準的なv1betaを使用
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
             const response = await fetch(url, {
@@ -25,6 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: {
+                        temperature: 1.0,
+                        maxOutputTokens: 100
+                    },
                     safetySettings: [
                         { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
                         { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" }
@@ -36,45 +41,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 return {
-                    main: "「通信に失敗しました」",
-                    sub: `HTTP ${response.status}: ${data.error ? data.error.message : 'Unknown Error'}`
+                    main: "「通信失敗」",
+                    sub: `HTTP ${response.status}: ${data.error ? data.error.message : 'Error'}`
                 };
             }
 
-            if (!data.candidates || data.candidates.length === 0) {
-                return { main: "「……。」", sub: "（AIが沈黙しました。安全フィルターの可能性があります）" };
+            if (!data.candidates || data.candidates.length === 0 || !data.candidates[0].content) {
+                return { main: "「……不潔です。」", sub: "（AIが回答を拒否しました）" };
             }
 
             const rawText = data.candidates[0].content.parts[0].text.trim();
             const lines = rawText.split('\n').filter(l => l.trim().length > 0);
-
             return {
                 main: lines[0] || "「えっちです。」",
                 sub: lines[1] || "（ゴミを見るような目）"
             };
 
         } catch (error) {
-            return { main: "「接続遮断」", sub: "ネットワークまたはCORSエラーです" };
+            return { main: "「接続エラー」", sub: error.message };
         }
     }
 
     if (kissBtn) {
         kissBtn.addEventListener('click', async () => {
+            console.log("Kiss button clicked");
             attemptCount++;
+
+            // ハート演出
             for (let i = 0; i < 8; i++) createHeart();
+
             kissBtn.disabled = true;
-            kissBtn.innerText = "交信中...";
+            kissBtn.innerText = "反応待機中...";
 
-            const reaction = await fetchDynamicReaction(attemptCount);
+            try {
+                const reaction = await fetchDynamicReaction(attemptCount);
+                console.log("Reaction received:", reaction);
 
-            setTimeout(() => {
-                const isError = reaction.main.includes("失敗");
                 fernMsg.innerText = reaction.main;
                 fernSub.innerText = reaction.sub;
-                showFernReaction(isError);
+                showFernReaction(reaction.main.includes("失敗") || reaction.main.includes("エラー"));
+            } catch (e) {
+                console.error("Interaction error:", e);
+            } finally {
                 kissBtn.disabled = false;
                 kissBtn.innerText = "投げキッスを試みる";
-            }, 600);
+            }
         });
     }
 
@@ -84,6 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
         heart.innerHTML = '💋';
         heart.style.left = `${kissBtn.offsetLeft + kissBtn.offsetWidth / 2 + (Math.random() * 100 - 50)}px`;
         heart.style.top = `${kissBtn.offsetTop}px`;
+        heart.style.position = 'absolute';
+        heart.style.zIndex = '1000';
         document.body.appendChild(heart);
         setTimeout(() => heart.remove(), 1500);
     }
@@ -92,16 +105,16 @@ document.addEventListener('DOMContentLoaded', () => {
         fernOverlay.classList.remove('hidden');
         document.body.style.backgroundColor = isError ? 'rgba(255, 0, 0, 0.1)' : 'rgba(75, 0, 130, 0.1)';
 
+        // エラーでない場合のみ自動で閉じる
         if (!isError) {
             setTimeout(() => {
                 fernOverlay.classList.add('hidden');
                 document.body.style.backgroundColor = '';
             }, 4000);
-        } else {
-            fernSub.innerHTML += "<br><br><small>(ページをリロードしてやり直してください)</small>";
         }
     }
 
+    // 魔法陣のパララックス（既存）
     const magicCircle = document.querySelector('.magic-circle');
     window.addEventListener('mousemove', (e) => {
         const x = (window.innerWidth / 2 - e.pageX) / 40;
