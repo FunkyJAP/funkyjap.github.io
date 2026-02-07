@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const fernMsg = fernOverlay.querySelector('.fern-message');
     const fernSub = fernOverlay.querySelector('.fern-message.sub');
 
-    // --- 設定 ---
-    const GEMINI_API_KEY = "AIzaSyD-7piW3djXwy7iXjEFRIOHfrMPTiDZLVA";
+    // --- 設定AIzaSyD-7piW3djXwy7iXjEFRIOHfrMPTiDZLVA ---
+    const GEMINI_API_KEY = "";
 
     let attemptCount = 0;
 
@@ -102,3 +102,4 @@ document.addEventListener('DOMContentLoaded', () => {
         if (magicCircle) magicCircle.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
     });
 });
+
